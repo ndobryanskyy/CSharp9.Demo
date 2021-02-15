@@ -1,4 +1,10 @@
-﻿namespace CSharp9.LearningTests
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
+using Xunit;
+
+namespace CSharp9.LearningTests
 {
     // public sealed class RiderSettings : IdeSettings
     // {
@@ -22,6 +28,9 @@
 
             settings.SupportedFonts.Should().NotBeNull();
             settings.SupportedFonts.Should().BeOfType<List<FontSettings>>();
+
+            settings.Registry.Should().NotBeNull();
+            settings.Registry.Should().BeOfType<Dictionary<string, string>>();
         }
         */
         

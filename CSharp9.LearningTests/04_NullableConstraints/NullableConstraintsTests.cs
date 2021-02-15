@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
+using Xunit;
 
 namespace CSharp9.LearningTests
 {
@@ -29,10 +31,10 @@ namespace CSharp9.LearningTests
         [Fact]
         public void Should_Find_Max_Item_By_Selector()
         {
-            var fonts = new[] { DefaultFonts.Arial, DefaultFonts.Consolas, DefaultFonts.FiraCode };
+            var fonts = new[] { DefaultFonts.Arial14, DefaultFonts.Consolas16, DefaultFonts.FiraCode15 };
 
             var maxFontBySize = fonts.MaxBy(x => x.Size);
-            maxFontBySize.Should().Be(DefaultFonts.Consolas);
+            maxFontBySize.Should().Be(DefaultFonts.Consolas16);
         }
         */
         

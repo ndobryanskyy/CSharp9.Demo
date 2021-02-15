@@ -1,4 +1,13 @@
-﻿namespace CSharp9.LearningTests
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using FluentAssertions;
+using Newtonsoft.Json;
+using Xunit;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+
+namespace CSharp9.LearningTests
 {
     public class FontSettings
     {
@@ -19,7 +28,7 @@
         [Fact]
         public void Instances_With_Equal_Values_Should_Be_Equal()
         {
-            var settings = DefaultFonts.Consolas;
+            var settings = DefaultFonts.Consolas16;
 
             var identicalSettings = new FontSettings("Consolas", 16);
             
@@ -50,7 +59,7 @@
         [Fact]
         public void Should_Have_Synthesized_Deconstructor()
         {
-            var settings = DefaultFonts.Consolas;
+            var settings = DefaultFonts.Consolas16;
 
             var (fontFamily, fontSize) = settings;
 
@@ -63,7 +72,7 @@
         [Fact]
         public void Should_Have_Synthesized_ToString_Printing_All_Public_Members()
         {
-            var settings = DefaultFonts.Consolas;
+            var settings = DefaultFonts.Consolas16;
 
             settings.ToString().Should().Be("FontSettings { Family = Consolas, Size = 16 }");
         }
@@ -189,21 +198,21 @@
         [Fact]
         public void System_Text_Json_Can_Serialize_And_Deserialize_Records()
         {
-            var serializedSettings = JsonSerializer.Serialize(DefaultFonts.Consolas);
+            var serializedSettings = JsonSerializer.Serialize(DefaultFonts.Consolas16);
             serializedSettings.Should().Be(@"{""Family"":""Consolas"",""Size"":16}");
 
             var deserializedSettings = JsonSerializer.Deserialize<FontSettings>(serializedSettings);
-            deserializedSettings.Should().Be(DefaultFonts.Consolas);
+            deserializedSettings.Should().Be(DefaultFonts.Consolas16);
         }
         
         [Fact]
         public void Newtonsoft_Json_Can_Serialize_And_Deserialize_Records()
         {
-            var serializedSettings = JsonConvert.SerializeObject(DefaultFonts.Consolas);
+            var serializedSettings = JsonConvert.SerializeObject(DefaultFonts.Consolas16);
             serializedSettings.Should().Be(@"{""Family"":""Consolas"",""Size"":16}");
 
             var deserializedSettings = JsonConvert.DeserializeObject<FontSettings>(serializedSettings);
-            deserializedSettings.Should().Be(DefaultFonts.Consolas);
+            deserializedSettings.Should().Be(DefaultFonts.Consolas16);
         }
         */
     }

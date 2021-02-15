@@ -1,3 +1,7 @@
+using System;
+using FluentAssertions;
+using Xunit;
+
 namespace CSharp9.LearningTests
 {
     public class IdeSettings
@@ -65,11 +69,8 @@ namespace CSharp9.LearningTests
         public void Can_Change_VisualStudio_Defaults()
         {
             var defaultSettings = new VisualStudioSettings();
-            var settingsWithDecreasedScaling = new VisualStudioSettings
-            {
-                EditorScaling = 100
-            };
-        
+            var settingsWithDecreasedScaling = new VisualStudioSettings();
+
             defaultSettings.EditorScaling.Should().Be(125);
             settingsWithDecreasedScaling.EditorScaling.Should().Be(100);
         }
