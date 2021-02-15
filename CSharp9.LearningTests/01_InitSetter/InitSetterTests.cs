@@ -6,34 +6,64 @@ namespace CSharp9.LearningTests
 {
     public class IdeSettings
     {
-        public WhitespaceCharacter WhitespaceCharacter { get; set; }
+        private readonly int _editorScaling = 100;
 
-        public int EditorScaling { get; set; } = 100;
-        
-        public string FontFamily { get; set; } = "Consolas";
+        public IdeSettings(WhitespaceCharacter whitespaceCharacter)
+        {
+            WhitespaceCharacter = whitespaceCharacter;
+        }
 
-        public int FontSize { get; set; } = 16;
+        public WhitespaceCharacter WhitespaceCharacter { get; }
+
+        public int EditorScaling
+        {
+            get => _editorScaling;
+            init
+            {
+                if (value < 25)
+                {
+                    throw new ArgumentException();
+                }
+
+                if (value > 300)
+                {
+                    throw new ArgumentException();
+                }
+
+                _editorScaling = value;
+            }
+        }
+
+        public string FontFamily { get; init; } = "Consolas";
+
+        public int FontSize { get; init; } = 16;
+    }
+
+    public sealed class VisualStudioSettings : IdeSettings
+    {
+        public VisualStudioSettings()
+            : base(WhitespaceCharacter.Tab)
+        {
+            EditorScaling = 125;
+        }
     }
 
     public sealed class InitSetterTests
     {
-        /* Whitespace
         [Fact]
         public void Should_Be_Politically_Correct()
         {
-            var settings = new IdeSettings
+            var settings = new IdeSettings(WhitespaceCharacter.Space)
             {
                 FontFamily = "Fira Code",
-                FontSize = 18
+                FontSize = 18,
             };
 
             settings.WhitespaceCharacter.Should().Be(WhitespaceCharacter.Space);
             settings.FontFamily.Should().Be("Fira Code");
             settings.FontSize.Should().Be(18);
         }
-        */
         
-        /* Immutability
         [Fact]
         public void Settings_Should_Be_Immutable()
         {
@@ -42,13 +72,12 @@ namespace CSharp9.LearningTests
                 EditorScaling = 121
             };
             
-            settings.EditorScaling = 100;
+            // Does not compile
+            // settings.EditorScaling = 100;
         
             settings.EditorScaling.Should().Be(121);
         }
-        */
         
-        /* Editor Scaling
         [Theory]
         [InlineData(24)]
         [InlineData(301)]
@@ -62,18 +91,18 @@ namespace CSharp9.LearningTests
                 };
             });
         }
-        */
         
-        /* VisualStudioSettings 125
         [Fact]
         public void Can_Change_VisualStudio_Defaults()
         {
             var defaultSettings = new VisualStudioSettings();
-            var settingsWithDecreasedScaling = new VisualStudioSettings();
+            var settingsWithDecreasedScaling = new VisualStudioSettings
+            {
+                EditorScaling = 100
+            };
 
             defaultSettings.EditorScaling.Should().Be(125);
             settingsWithDecreasedScaling.EditorScaling.Should().Be(100);
         }
-        */
     }
 }

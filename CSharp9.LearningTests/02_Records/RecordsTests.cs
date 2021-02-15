@@ -9,22 +9,13 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace CSharp9.LearningTests
 {
-    public class FontSettings
-    {
-        public FontSettings(string family, int size)
-        {
-            Family = family;
-            Size = size;
-        }
+    public record FontSettings(string Family, int Size);
 
-        public string Family { get; }
-
-        public int Size { get; }
-    }
+    public record ExtendedFontSettings(string Family, int Size, bool IsItalic = false)
+        : FontSettings(Family, Size);
 
     public sealed class RecordsTests
     {
-        /* Equality
         [Fact]
         public void Instances_With_Equal_Values_Should_Be_Equal()
         {
@@ -38,9 +29,7 @@ namespace CSharp9.LearningTests
             (settings == identicalSettings).Should().BeTrue();
             (settings != identicalSettings).Should().BeFalse();
         }
-        */
 
-        /* Primary Constructor
         [Fact]
         public void Positional_Properties_Should_Be_Synthesized_As_Get_Init()
         {
@@ -51,11 +40,9 @@ namespace CSharp9.LearningTests
                 Size = 24
             };
 
-            settings.Size.Should().Be(16);
+            settings.Size.Should().Be(24);
         }
-        */
 
-        /* Deconstructor
         [Fact]
         public void Should_Have_Synthesized_Deconstructor()
         {
@@ -66,9 +53,7 @@ namespace CSharp9.LearningTests
             fontFamily.Should().Be("Consolas");
             fontSize.Should().Be(16);
         }
-        */
         
-        /* ToString
         [Fact]
         public void Should_Have_Synthesized_ToString_Printing_All_Public_Members()
         {
@@ -76,9 +61,7 @@ namespace CSharp9.LearningTests
 
             settings.ToString().Should().Be("FontSettings { Family = Consolas, Size = 16 }");
         }
-        */
 
-        /* Derived Types: ExtendedFontSettings IsItalic
         [Fact]
         public void Derived_Type_Should_Extend_Base_ToString_And_Deconstructor()
         {
@@ -97,9 +80,7 @@ namespace CSharp9.LearningTests
             extendedSettings.ToString()
                 .Should().Be("ExtendedFontSettings { Family = Consolas, Size = 16, IsItalic = True }");
         }
-        */
         
-        /* Derived Types: Equality
         [Fact]
         public void Synthesized_Equals_Implementation_Considers_Only_Records_Of_Same_Type_Equal()
         {
@@ -117,9 +98,7 @@ namespace CSharp9.LearningTests
             FontSettingsEqual(defaultSettings, extendedSettings).Should().BeFalse();
             FontSettingsEqual(extendedSettings, defaultSettings).Should().BeFalse();
         }
-        */
 
-        /* WITH Expression
         [Fact]
         public void Should_Support_Special_Non_Destructive_Copy_With_Expression()
         {
@@ -138,33 +117,34 @@ namespace CSharp9.LearningTests
             consolasDefault.Size.Should().Be(16);
             consolasDefault.IsItalic.Should().BeFalse();
         }
-        */
 
-        /* Shallow Equals: AuthoredFontSettings Authors
+        public record AuthoredFontSettings(string Family, int Size)
+            : FontSettings(Family, Size)
+        {
+            public List<string> Authors { get; init; } = new List<string>();
+        }
+
         [Fact]
         public void Equality_Comparison_Is_Shallow()
         {
+            var authors = new List<string>
+            {
+                "John", "Jane"
+            };
+            
             var authoredFontSettings = new AuthoredFontSettings("JoJa", 16)
             {
-                Authors = new List<string>
-                {
-                    "John", "Jane"
-                }
+                Authors = authors
             };
             
             var identicalAuthoredFontSettings = new AuthoredFontSettings("JoJa", 16)
             {
-                Authors = new List<string>
-                {
-                    "John", "Jane"
-                }
+                Authors = authors
             };
 
             authoredFontSettings.Equals(identicalAuthoredFontSettings).Should().BeTrue();
         }
-        */
 
-        /* Shallow Cloning
         [Fact]
         public void Cloning_Is_Shallow()
         {
@@ -189,12 +169,10 @@ namespace CSharp9.LearningTests
             
             enlargedAuthoredFontSettings.Authors.Should().BeEquivalentTo(new[]
             {
-                "John", "Jane"
+                "John", "Jane", "Alex"
             });
         }
-        */
 
-        /* Serializers
         [Fact]
         public void System_Text_Json_Can_Serialize_And_Deserialize_Records()
         {
@@ -214,6 +192,11 @@ namespace CSharp9.LearningTests
             var deserializedSettings = JsonConvert.DeserializeObject<FontSettings>(serializedSettings);
             deserializedSettings.Should().Be(DefaultFonts.Consolas16);
         }
-        */
+
+        public record InputViewModel([Required] string Name, int Age)
+        {
+            [JsonPropertyName("hello")]
+            public int Age { get; init; } = Age;
+        }
     }
 }

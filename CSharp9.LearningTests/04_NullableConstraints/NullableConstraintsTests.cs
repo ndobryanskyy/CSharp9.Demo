@@ -8,11 +8,16 @@ namespace CSharp9.LearningTests
 {
     public static class EnumerableExtensions
     {
-        public static TItem MaxBy<TItem, TMember>(this IEnumerable<TItem> source, Func<TItem, TMember> selector)
-            where TMember : IComparable<TMember>?
+        public static TItem? MaxBy<TItem, TMember>(this IEnumerable<TItem> source, Func<TItem, TMember?> selector)
+            where TMember : IComparable<TMember>
         {
-            return source.Aggregate((maxItem, currentItem) =>
+            return source.Aggregate(default(TItem), (maxItem, currentItem) =>
             {
+                if (maxItem == null)
+                {
+                    return currentItem;
+                }
+                
                 var currentToMaxComparison = selector(currentItem)?.CompareTo(selector(maxItem));
 
                 return currentToMaxComparison switch
@@ -27,7 +32,6 @@ namespace CSharp9.LearningTests
     
     public sealed class NullableConstraintsTests
     {
-        /* Behavior Test
         [Fact]
         public void Should_Find_Max_Item_By_Selector()
         {
@@ -36,9 +40,7 @@ namespace CSharp9.LearningTests
             var maxFontBySize = fonts.MaxBy(x => x.Size);
             maxFontBySize.Should().Be(DefaultFonts.Consolas16);
         }
-        */
         
-        /* No Elements
         [Fact]
         public void Should_Return_Default_If_Source_Contains_No_Elements()
         {
@@ -47,9 +49,7 @@ namespace CSharp9.LearningTests
 
             maxFontBySize.Should().BeNull();
         }
-        */
 
-        /* Value types support
         public struct FontSettingsStruct
         {
             public FontSettingsStruct(string family, int size)
@@ -79,9 +79,7 @@ namespace CSharp9.LearningTests
             
             maxFontBySize.Should().Be(biggestFont);
         }
-        */
 
-        /* Empty for structs 
         [Fact]
         public void Should_Return_Default_Instance_For_Structs_If_Source_Is_Empty()
         {
@@ -93,6 +91,5 @@ namespace CSharp9.LearningTests
             maxFontBySize.Family.Should().BeNull();
             maxFontBySize.Size.Should().Be(0);
         }
-        */
     }
 }

@@ -10,29 +10,29 @@ namespace CSharp9.LearningTests
             FontSettings? UserDefaultFont = default,
             FontSettings? ProjectFont = default);
         
-        /* NOT modifier
         [Fact]
         public void Should_Support_Pattern_Negation_With_NOT()
         {
+            // && || !
+            // is and or not
+            
             var settings = new IdeFontSettings(DefaultFonts.Consolas16, DefaultFonts.FiraCode15);
 
-            var userFontIsSet = settings.UserDefaultFont != null;
+            var userFontIsSet = settings.UserDefaultFont is not null;
             userFontIsSet.Should().BeTrue();
 
-            var nonDefaultSize = settings.UserDefaultFont!.Size != 16;
+            var nonDefaultSize = settings.UserDefaultFont!.Size is not 16;
             nonDefaultSize.Should().BeTrue();
         }
-        */
 
-        /* NOT null switch
         [Fact]
         public void Support_Not_Null_Expression_In_Switch()
         {
             static FontSettings GetEffectiveFont(IdeFontSettings? settings) => settings switch
             {
                 { ProjectFont: { } projectFont } => projectFont,
-                { UserDefaultFont: { } userFont } => userFont,
-                { } => settings.DefaultFont,
+                { UserDefaultFont: not null and var userFont } => userFont,
+                not null => settings.DefaultFont,
                 null => DefaultFonts.Consolas16
             };
             
@@ -46,29 +46,15 @@ namespace CSharp9.LearningTests
             
             GetEffectiveFont(null).Should().Be(DefaultFonts.Consolas16);
         }
-        */
 
-        /* Enhancements
         [Fact]
         public void Support_And_Or_Patterns()
         {
-            static bool IsNiceFont(FontSettings settings)
-            {
-                if (settings is ExtendedFontSettings extended)
-                {
-                    return extended switch
-                    {
-                        { IsItalic: true } => true,
-                        { Family: "Fira Code", Size: var size } when (size >= 14 && size <= 24) => true,
-                        { Family: "Consolas", Size: var size } when (size >= 14 && size <= 24) => true,
-                        _ => false
-                    };
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            static bool IsNiceFont(FontSettings settings) 
+                => settings is ExtendedFontSettings and (
+                    { IsItalic: true } or 
+                    { Family: "Fira Code" or "Consolas", Size: >= 14 and <= 24 }
+                );
 
             var italicArial = new ExtendedFontSettings("Arial", 30, true);
             var consolas14 = new ExtendedFontSettings("Consolas", 14);
@@ -82,6 +68,5 @@ namespace CSharp9.LearningTests
             IsNiceFont(firaCode24).Should().BeTrue();
             IsNiceFont(consolas14).Should().BeTrue();
         }
-        */
     }
 }
